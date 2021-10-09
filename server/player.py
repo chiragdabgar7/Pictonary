@@ -44,9 +44,9 @@ class Player(object):
     def disconnect(self):
         """
         Call to disconnect player
-        :return:
+        :return: None
         """
-        pass
+        self.game.player_disconnected(self)
 
     def get_ip(self):
         """

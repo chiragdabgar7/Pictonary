@@ -93,6 +93,4 @@ class Round(object):
             self.end_round("Drawing Player left the game!")
 
     def end_round(self, mgs):
-
-        # TODO implement end_round function
-        pass
+        self.game.round_ended()
