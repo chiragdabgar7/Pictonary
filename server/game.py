@@ -1,0 +1,103 @@
+"""
+Handles operations related to game and connections
+between, players, boards and rounds
+"""
+from .player import Player
+from .round import Round
+from .board import Board
+
+
+class Game(object):
+    def __int__(self, id, players, thread):
+        """
+        init the game. once the players threshold is met!
+        :param id: int
+        :param players: Players []
+        :return: None
+        """
+        self.id = id
+        self.players = players
+        self.words_used = []
+        self.round = None
+        self.board = Board()
+        self.player_draw_ind = 0
+        self.connected_thread = thread
+        self.start_new_round()
+        # self.create_board()
+
+    def start_new_round(self):
+        """
+        starts a new round with word, player drawing on the game and list of players
+        :return: None
+        """
+        self.round = Round(self.get_word(), self.players[self.player_draw_ind], self.players, self)
+        self.player_draw_ind += 1
+
+        if self.player_draw_ind >= len(self.players):
+            self.end_game()
+            self.round_ended()
+
+    def player_guessed(self, player, guess):
+        """
+        makes the player guess the word
+        :param player: Player
+        :param guess:str
+        :return: bool
+        """
+        return self.round.guess(player, guess)
+
+    def player_disconnected(self, player):
+        """
+        calls to clean up objects whern player disconnects
+        :param player:  player
+        :return:  Exception()
+        """
+        pass
+
+    def skip(self):
+        """
+        increments the round skips, if skips are greater
+        than threshold, starts a new round
+        :return: None
+        """
+        if self.round:
+            new_round = self.round.skip()
+            if new_round:
+                self.round_ended()
+        else:
+            raise Exception("No round started yet!")
+
+    def round_ended(self):
+        """
+        If the round ends call this fun
+        :return: None
+        """
+        self.start_new_round()
+        self.board.clear()
+
+    def update_board(self, x, y, color):
+        """
+        calls update fun in board
+        :param x: int
+        :param y: int
+        :param color: (int, int, int)
+        :return: None
+        """
+        if not self.board:
+            raise Exception("No board created!")
+        self.board.update(x, y, color)
+
+    def end_game(self):
+        """
+        Ends the game
+        :return: None
+        """
+        # TODO implement
+        pass
+
+    def get_word(self):
+        """
+        Gives a word that has not yet been used
+        :return: str
+        """
+        pass
