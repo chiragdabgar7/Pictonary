@@ -2,6 +2,7 @@
 Handles operations related to game and connections
 between, players, boards and rounds
 """
+from . import player
 from .player import Player
 from .round import Round
 from .board import Board
@@ -9,7 +10,7 @@ import random
 
 
 class Game(object):
-    def __int__(self, id, players, thread):
+    def __int__(self, id, players):
         """
         init the game. once the players threshold is met!
         :param id: int
@@ -22,9 +23,7 @@ class Game(object):
         self.round = None
         self.board = Board()
         self.player_draw_ind = 0
-        self.connected_thread = thread
         self.start_new_round()
-        # self.create_board()
 
     def start_new_round(self):
         """
@@ -119,7 +118,7 @@ class Game(object):
                 wrd = line.strip()
                 if wrd not in self.words_used:
                     words.append(wrd)
-                r = random.randint(0, len(words))
+                r = random.randint(0, len(words)-1)
                 self.words_used.add(wrd)
             return words[r].strip()
 

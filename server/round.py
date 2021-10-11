@@ -25,9 +25,9 @@ class Round(object):
         self.players_score = {player: 0 for player in players}
         self.time = 75
         self.chat = Chat(self)
-        self.game = Game(self)
-        self.start_time = t.time()
+        self.game = game
         start_new_thread(self.time_thread, ())
+
 
     def skip(self):
         """
