@@ -2,10 +2,10 @@
 Handles operations related to game and connections
 between, players, boards and rounds
 """
-from . import player
-from .player import Player
-from .round import Round
-from .board import Board
+import player
+from player import Player
+from round import Round
+from board import Board
 import random
 
 
@@ -21,6 +21,7 @@ class Game(object):
         self.players = players
         self.words_used = set()
         self.round = None
+        self.round_count = 1
         self.board = Board()
         self.player_draw_ind = 0
         self.start_new_round()
@@ -33,7 +34,7 @@ class Game(object):
         round_word = self.get_word()
         self.round = Round(round_word, self.players[self.player_draw_ind], self.players, self)
         self.player_draw_ind += 1
-
+        self.round_count += 1
         if self.player_draw_ind >= len(self.players):
             self.end_game()
             self.round_ended()
@@ -64,6 +65,14 @@ class Game(object):
             raise Exception("Player not in game!")
         if len(self.players) <= 2:
             self.end_game()
+
+    def get_player_scores(self):
+        """
+        Returns a dict of player scores
+        :return: dict
+        """
+        scores = {player:player.get_score() for player in self.players}
+        return scores
 
     def skip(self):
         """

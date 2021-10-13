@@ -1,8 +1,6 @@
 """
 stores state of the players in the game
 """
-from .game import Game
-from .chat import Chat
 
 
 class Player(object):
