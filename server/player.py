@@ -3,7 +3,7 @@ stores state of the players in the game
 """
 
 
-class Player(object):
+class Player:
     def __init__(self, ip, name):
         """
         Inits the player obj

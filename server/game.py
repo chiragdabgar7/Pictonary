@@ -9,15 +9,15 @@ from board import Board
 import random
 
 
-class Game(object):
-    def __int__(self, id, players):
+class Game:
+    def __init__(self, game_id, players):
         """
         init the game. once the players threshold is met!
-        :param id: int
+        :param game_id: int
         :param players: Players []
         :return: None
         """
-        self.id = id
+        self.game_id = game_id
         self.players = players
         self.words_used = set()
         self.round = None
@@ -33,11 +33,11 @@ class Game(object):
         """
         round_word = self.get_word()
         self.round = Round(round_word, self.players[self.player_draw_ind], self.players, self)
-        self.player_draw_ind += 1
         self.round_count += 1
         if self.player_draw_ind >= len(self.players):
-            self.end_game()
             self.round_ended()
+            self.end_game()
+        self.player_draw_ind += 1
 
     def player_guessed(self, player, guess):
         """

@@ -3,7 +3,7 @@ stores the state of the drawing board
 """
 
 
-class Board(object):
+class Board():
     ROWS = COLS = 720
 
     def __init__(self):

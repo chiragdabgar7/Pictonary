@@ -6,8 +6,8 @@ from _thread import *
 from chat import Chat
 
 
-class Round(object):
-    def __int__(self, word, player_drawing, players, game):
+class Round:
+    def __init__(self, word, player_drawing, players, game):
         """
         initializes word and player_drawing
         :param word: str
@@ -21,7 +21,7 @@ class Round(object):
         self.skips = 0
         self.players_score = {player: 0 for player in players}
         self.time = 75
-        self.chat = Chat(self)
+        self.chat = Chat()
         self.game = game
         start_new_thread(self.time_thread, ())
 

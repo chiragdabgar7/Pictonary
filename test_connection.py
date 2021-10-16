@@ -34,9 +34,9 @@ class Network:
         try:
             self.send({10: []})
         except:
-            pass
+            self.client.close()
         self.client.close()
 
 
-n = Network("TOM")
-print(n.send({0:[]}))
+n = Network("Chirag")
+print(n.send({-1: []}))

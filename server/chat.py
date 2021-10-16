@@ -3,10 +3,10 @@ Represents and store info about the chat
 """
 
 
-class Chat(object):
-    def __int__(self):
+class Chat:
+    def __init__(self):
         self.content = []
-        self.round = r
+        # self.round = r
 
     def update_chat(self, mgs):
         self.content.append(mgs)

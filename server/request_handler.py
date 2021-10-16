@@ -11,7 +11,7 @@ import json
 
 
 class Server(object):
-    PLAYERS = 8
+    PLAYERS = 1
 
     def __init__(self):
         self.connection_queue = []
@@ -21,8 +21,7 @@ class Server(object):
         """
         Handles in game communication bw clients
         :param conn: connections objet
-        :param ip: str
-        :param name: str
+        :param player: player obj of Class Player
         :return: None
         """
         while True:
@@ -33,14 +32,14 @@ class Server(object):
                     print("[LOG] Received data ", data)
                 except:
                     break
-                # keys = [key for key in data.split(',')]
-                keys = data.keys()
+                keys = [int(key) for key in data.keys()]
                 send_msg = {key: [] for key in keys}
-
                 for key in keys:
                     if key == -1:  # get game, return players in the game
                         if player.game:
-                            send_msg[-1] = player.game.players
+                            send = {player.get_name(): player.get_score() for player in player.game.get_player_scores()}
+                            send_msg[-1] = send
+                            # print(send_msg)
                         else:
                             send_msg[-1] = []
 
@@ -79,11 +78,9 @@ class Server(object):
                     if key == 10:
                         raise Exception("not a valid request")
                 send_msg = json.dumps(send_msg)
-                print([i.name for i in self.connection_queue])
                 conn.sendall(send_msg.encode())
             except Exception as e:
-                print(type(e))
-                print(f"[EXCEPTION] {player.get_name()} disconnected", e, e.args)
+                print(f"[EXCEPTION] {player.get_name()} disconnected", e)
                 break
                 # TODO call player player game disconnect method
         print(f'[DISCONNECT] {player.name} disconnected')
@@ -96,31 +93,29 @@ class Server(object):
         :return: None
         """
         self.connection_queue.append(player)
-
+        print(self.connection_queue)
         if len(self.connection_queue) >= self.PLAYERS:
-            game = Game(self.game_id, self.connection_queue[:])
-
+            game = Game(self.game_id, self.connection_queue)
             for p in self.connection_queue:
                 p.set_game(game)
 
             self.game_id += 1
             self.connection_queue = []
 
-    def authentication(self, conn, addr):
+    def authentication(self, conn, ad):
         """
         Authenticate the new player
         :param conn: player connection
-        :param addr: ip address
+        :param ad: ip address
         :return: None
         """
         try:
             data = conn.recv(1024)
             name = (data.decode())
-            print(name)
             if not name:
                 raise Exception("No name received or empty name received")
             conn.sendall("1".encode())
-            player = Player(addr, name)
+            player = Player(ad, name)
             self.handle_queue(player)
             auth_thread = threading.Thread(target=self.player_thread, args=(conn, player))
             auth_thread.start()
