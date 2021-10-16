@@ -11,6 +11,8 @@ import json
 
 
 class Server(object):
+    PLAYERS = 8
+
     def __init__(self):
         self.connection_queue = []
         self.game_id = 0
@@ -25,10 +27,14 @@ class Server(object):
         """
         while True:
             try:
-                data = conn.recv(1024)
-                data = json.loads(data)
-
-                keys = [key for key in data.keys()]
+                try:
+                    data = conn.recv(1024)
+                    data = json.loads(data.decode())
+                    print("[LOG] Received data ", data)
+                except:
+                    break
+                # keys = [key for key in data.split(',')]
+                keys = data.keys()
                 send_msg = {key: [] for key in keys}
 
                 for key in keys:
@@ -65,18 +71,23 @@ class Server(object):
                             send_msg[7] = skips
                         elif key == 8:  # Update board
                             x, y, color = data[8][:3]
-                            self.game.update_board(x, y, color)
+                            player.game.update_board(x, y, color)
                         elif key == 9:  # Get round time
-                            t = self.game.round.time_thread()
+                            t = player.game.round.time_thread()
                             send_msg[9] = t
 
-                        else:
-                            raise Exception("not a valid request")
-                conn.sendall(json.dumps(send_msg))
+                    if key == 10:
+                        raise Exception("not a valid request")
+                send_msg = json.dumps(send_msg)
+                print([i.name for i in self.connection_queue])
+                conn.sendall(send_msg.encode())
             except Exception as e:
-                print(f"[EXCEPTION] {player.get_name()} disconnected", e)
-                conn.close()
+                print(type(e))
+                print(f"[EXCEPTION] {player.get_name()} disconnected", e, e.args)
+                break
                 # TODO call player player game disconnect method
+        print(f'[DISCONNECT] {player.name} disconnected')
+        conn.close()
 
     def handle_queue(self, player):
         """
@@ -86,7 +97,7 @@ class Server(object):
         """
         self.connection_queue.append(player)
 
-        if len(self.connection_queue) >= 8:
+        if len(self.connection_queue) >= self.PLAYERS:
             game = Game(self.game_id, self.connection_queue[:])
 
             for p in self.connection_queue:
@@ -105,6 +116,7 @@ class Server(object):
         try:
             data = conn.recv(1024)
             name = (data.decode())
+            print(name)
             if not name:
                 raise Exception("No name received or empty name received")
             conn.sendall("1".encode())
@@ -114,11 +126,12 @@ class Server(object):
             auth_thread.start()
         except Exception as e:
             print("[Exception]", e)
+            print("in auth func")
             conn.close()
 
     def connection_thread(self):
-        server = "localhost"
-        port = 5555
+        server = "127.0.0.1"
+        port = 30008
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
