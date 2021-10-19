@@ -30,7 +30,8 @@ class Server(object):
                     data = conn.recv(1024)
                     data = json.loads(data.decode())
                     print("[LOG] Received data ", data)
-                except:
+                except Exception as e:
+                    print(e)
                     break
                 keys = [int(key) for key in data.keys()]
                 send_msg = {key: [] for key in keys}
@@ -44,11 +45,13 @@ class Server(object):
                             send_msg[-1] = []
 
                     if player.game:
+                        # print(key)
                         if key == 0:  # guess
-                            correct = player.game.player_guessed(player, data[0][0])
+                            correct = player.game.player_guessed(player, data['0'][0])
                             send_msg[0] = correct
                         elif key == 1:  # skip
                             skip = player.game.skip()
+                            print(skip)
                             send_msg[1] = skip
                         elif key == 2:  # get chat
                             chat = player.game.round.chat.get_chat()
@@ -82,8 +85,8 @@ class Server(object):
             except Exception as e:
                 print(f"[EXCEPTION] {player.get_name()} disconnected", e)
                 break
-                # TODO call player player game disconnect method
         print(f'[DISCONNECT] {player.name} disconnected')
+        # player.game.player_disconnected()
         conn.close()
 
     def handle_queue(self, player):
@@ -93,7 +96,6 @@ class Server(object):
         :return: None
         """
         self.connection_queue.append(player)
-        print(self.connection_queue)
         if len(self.connection_queue) >= self.PLAYERS:
             game = Game(self.game_id, self.connection_queue)
             for p in self.connection_queue:

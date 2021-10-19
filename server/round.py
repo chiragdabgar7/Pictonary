@@ -72,6 +72,8 @@ class Round:
         correct = wrd == self.word
         if correct:
             self.players_guessed.append(player)
+            return True
+        return False
             # TODO implement scoring system here
 
     def player_left(self, player):
