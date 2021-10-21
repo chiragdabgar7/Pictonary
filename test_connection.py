@@ -25,7 +25,24 @@ class Network:
         try:
             # data = bytes(data, 'utf-8')
             self.client.send(json.dumps(data).encode())
-            return json.loads(self.client.recv(2048))
+            d = ""
+            while 1:
+                last = self.client.recv(1024).decode()
+                try:
+                    if last == ".":
+                        break
+                except Exception as e:
+                    pass
+                d += last
+                try:
+                    if last.count("}") == 1:
+                        if d[-1] == ".":
+                            d = d[:-1]
+                        break
+                except Exception as e:
+                    pass
+            keys = [key for key in data.keys()]
+            return json.loads(d)[str(keys[0])]
         except socket.error as e:
             self.disconnect(e)
 
@@ -39,4 +56,8 @@ class Network:
 
 
 n = Network("Chirag")
-print(n.send({1: []}))
+baord_op = n.send({9: []})
+baord_op = n.send({9: []})
+baord_op = n.send({9: []})
+
+print(baord_op)

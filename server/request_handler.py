@@ -31,7 +31,7 @@ class Server(object):
                     data = json.loads(data.decode())
                     print("[LOG] Received data ", data)
                 except Exception as e:
-                    print(e)
+                    # print(e)
                     break
                 keys = [int(key) for key in data.keys()]
                 send_msg = {key: [] for key in keys}
@@ -51,7 +51,7 @@ class Server(object):
                             send_msg[0] = correct
                         elif key == 1:  # skip
                             skip = player.game.skip()
-                            print(skip)
+                            # print(skip)
                             send_msg[1] = skip
                         elif key == 2:  # get chat
                             chat = player.game.round.chat.get_chat()
@@ -75,13 +75,14 @@ class Server(object):
                             x, y, color = data[8][:3]
                             player.game.update_board(x, y, color)
                         elif key == 9:  # Get round time
-                            t = player.game.round.time_thread()
+                            t = player.game.round.time
                             send_msg[9] = t
 
                     if key == 10:
                         raise Exception("not a valid request")
                 send_msg = json.dumps(send_msg)
                 conn.sendall(send_msg.encode())
+                conn.sendall(".".encode())
             except Exception as e:
                 print(f"[EXCEPTION] {player.get_name()} disconnected", e)
                 break

@@ -33,14 +33,14 @@ class Game:
         """
         try:
             round_word = self.get_word()
-            self.round = Round(round_word, self.players[self.player_draw_ind], self.players, self)
+            self.round = Round(round_word, self.players[self.player_draw_ind], self)
             self.round_count += 1
             if self.player_draw_ind >= len(self.players):
                 self.round_ended()
                 self.end_game()
             self.player_draw_ind += 1
         except Exception as e:
-            print(e)
+            # print(e)
             self.end_game()
 
     def player_guessed(self, player, guess):
@@ -75,7 +75,7 @@ class Game:
         Returns a dict of player scores
         :return: dict
         """
-        scores = {player:player.get_score() for player in self.players}
+        scores = {player.name:player.get_score() for player in self.players}
         return scores
 
     def skip(self):
@@ -106,7 +106,7 @@ class Game:
         calls update fun in board
         :param x: int
         :param y: int
-        :param color: (int, int, int)
+        :param color: int (0-8)
         :return: None
         """
         if not self.board:
@@ -119,8 +119,8 @@ class Game:
         :return: None
         """
         print(f'[GAME] {self.game_id} ended')
-        for player in self.players:
-            self.round.player_left(player)
+        for player_obj in self.players:
+            player_obj.game = None
 
     def get_word(self):
         """

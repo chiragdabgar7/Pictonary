@@ -7,7 +7,7 @@ from chat import Chat
 
 
 class Round:
-    def __init__(self, word, player_drawing, players, game):
+    def __init__(self, word, player_drawing, game):
         """
         initializes word and player_drawing
         :param word: str
@@ -15,14 +15,13 @@ class Round:
         ;param player: Player[]
         """
         self.word = word
-        self.players = players
         self.player_drawing = player_drawing
         self.players_guessed = []
         self.skips = 0
-        self.players_score = {player: 0 for player in players}
+        self.game = game
+        self.players_score = {player: 0 for player in self.game.players}
         self.time = 75
         self.chat = Chat()
-        self.game = game
         start_new_thread(self.time_thread, ())
 
     def skip(self):
@@ -31,7 +30,7 @@ class Round:
         :return: bool
         """
         self.skips += 1
-        if self.skips > (len(self.players) - 2):
+        if self.skips > (len(self.game.players) - 2):
             return True
         return False
 
@@ -91,6 +90,7 @@ class Round:
             self.end_round("Drawing Player left the game!")
 
     def end_round(self, mgs):
-        for player in self.players:
-            player.update_score(self.players_score[player])
+        for player in self.game.players:
+            if player in self.players_score:
+                player.update_score(self.players_score[player])
         self.game.round_ended()

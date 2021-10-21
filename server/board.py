@@ -3,7 +3,7 @@ stores the state of the drawing board
 """
 
 
-class Board():
+class Board:
     ROWS = COLS = 720
 
     def __init__(self):
@@ -17,7 +17,7 @@ class Board():
         updates the board with x, y cordindate with the color
         :param x: int
         :param y: int
-        :param color: (int, int, int)
+        :param color: int (0-8)
         :return:None
         """
         self.data[y][x] = color
@@ -34,7 +34,7 @@ class Board():
         Create an empty board
         :return:
         """
-        return [[(225, 225, 225) for _ in range(self.COLS)] for _ in range(self.ROWS)]
+        return [[0 for _ in range(self.COLS)] for _ in range(self.ROWS)]
 
     def fill(self, x, y):
         """
