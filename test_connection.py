@@ -1,6 +1,6 @@
 import socket
 import json
-
+import time as t
 
 class Network:
     def __init__(self, name):
@@ -28,19 +28,17 @@ class Network:
             d = ""
             while 1:
                 last = self.client.recv(1024).decode()
-                try:
-                    if last == ".":
-                        break
-                except Exception as e:
-                    pass
                 d += last
                 try:
-                    if last.count("}") == 1:
-                        if d[-1] == ".":
-                            d = d[:-1]
+                    if d.count(".") == 1:
                         break
                 except Exception as e:
                     pass
+            try:
+                if d[-1] == ".":
+                    d = d[:-1]
+            except:
+                pass
             keys = [key for key in data.keys()]
             return json.loads(d)[str(keys[0])]
         except socket.error as e:
@@ -56,8 +54,13 @@ class Network:
 
 
 n = Network("Chirag")
-baord_op = n.send({9: []})
-baord_op = n.send({9: []})
-baord_op = n.send({9: []})
+print("Send 1")
+time = n.send({6: []})
+print(time)
+t.sleep(0.1)
+print("Send 2")
+time = n.send({4: []})
+print(time)
 
-print(baord_op)
+
+# print(baord_op)
