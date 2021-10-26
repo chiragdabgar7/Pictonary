@@ -82,7 +82,6 @@ class Server(object):
                         raise Exception("not a valid request")
                 send_msg = json.dumps(send_msg)
                 conn.sendall(send_msg.encode() + ".".encode())
-                # conn.sendall(".".encode())
             except Exception as e:
                 print(f"[EXCEPTION] {player.get_name()} disconnected", e)
                 break

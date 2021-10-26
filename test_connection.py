@@ -55,11 +55,11 @@ class Network:
 
 n = Network("Chirag")
 print("Send 1")
-time = n.send({6: []})
+time = n.send({4: []})
 print(time)
 t.sleep(0.1)
 print("Send 2")
-time = n.send({4: []})
+time = n.send({6: []})
 print(time)
 
 
