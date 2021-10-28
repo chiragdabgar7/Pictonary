@@ -34,7 +34,7 @@ class Board:
     def draw(self, win):
         for y, _ in enumerate(self.compressed_board):
             for x, col in enumerate(self.compressed_board):
-                pygame.draw.rect(win, col, (y, x, 1, 1), 0)
+                pygame.draw.rect(win, col, (self.y+y, self.x+x, 1, 1), 0)
 
     def click(self, x, y):
         """
